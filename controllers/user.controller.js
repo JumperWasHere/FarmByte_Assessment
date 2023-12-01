@@ -45,7 +45,6 @@ const addUser = async (req, res, next) => {
         });
     }
     try {
-        // users = await User.find();
         
         user = new User({
             firstname, lastName, emailAddress, password, homeAddress, roleId, title
