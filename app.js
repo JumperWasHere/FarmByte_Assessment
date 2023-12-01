@@ -1,3 +1,4 @@
+var createError = require('http-errors');
 var express = require('express');
 var app = express();
 const cors = require('cors');
@@ -6,9 +7,7 @@ var userRouter = require('./routes/user.router');
 const mongoose = require("mongoose");
 const uri = "mongodb+srv://FarmByte:VWidata3AWANCI6a@atlascluster.jgifr0r.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(uri)
-    .then(() => {
-        // app.listen(5000,()=>console.log("listend to port 5000 mongo db"))
-    }).catch((err) => console.log(err));
+    .catch((err) => console.log(err));
 app.use(cors({
     origin: '*'
 }));

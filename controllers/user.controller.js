@@ -2,6 +2,8 @@
 
 
 const User = require('../model/user')
+const { success, error, validation } = require('../utils/responseApi');
+const requiredKeys = ["firstname", "lastName", "emailAddress","password"];
 
 const getAllUsers = async (req, res, next) => {
     let users;
@@ -11,84 +13,49 @@ const getAllUsers = async (req, res, next) => {
         return next(err);
     }
     if (!users) {
-        return res.status(500).json({
-            success: false,
-            data: null,
-            error: {
-                code: 500,
-                message: 'internal server error'
-            }
-        });
+
+        return res.status(500).json(error("internal server error", res.statusCode));
+
     }
-    return res.status(500).json({
-        success: true,
-        data: users,
-        error: {
-            code: 200,
-            message: 'Success fetch data'
-        }
-    });
+
+    return res.status(200).json(success("Success get Users", { data: users }, res.statusCode));
+
 }
 const addUser = async (req, res, next) => {
     const { firstname, lastName, emailAddress, password, homeAddress, roleId, title } = req.body;
- 
-    let user;
+    const missingKeys = validateRequiredKeys(req.body, requiredKeys);
 
-    if (!validate(req.body)) {
-        return res.status(422).json({
-            success: false,
-            data: null,
-            error: {
-                code: 422,
-                message: 'invalid data'
-            }
-        });
+    if (missingKeys.length > 0) {
+        return res.status(422).json(validation({ key: missingKeys+ " is required" }));
     }
+
+    let user;
     try {
-        
         user = new User({
             firstname, lastName, emailAddress, password, homeAddress, roleId, title
         })
         user = await user.save();
-        console.log('done save');
+
     } catch (err) {
         return next(err);
     }
+
     if (!user) {
-        return res.status(500).json({
-            success: false,
-            data: null,
-            error: {
-                code: 500,
-                message: 'Unable to save user'
-            }
-        });
+        return res.status(500).json(error("Unable to save user", res.statusCode));
     }
-    return res.status(201).json({
-        success: true,
-        data: user,
-        error: {
-            code: 201,
-            message: 'Success insert user'
-        }
-    });
+
+    return res.status(201).json(success("Success insert user", { data: user }, res.statusCode));
+
 }
 const updateUser = async (req, res, next) => {
     const id = req.params.id;
     const { firstname, lastName, emailAddress, password, homeAddress, roleId, title } = req.body;
-
-    let user;
-
-    if (!validate(req.body)) {
-        return res.status(422).json({
-            success: false,
-            data: null,
-            error: {
-                code: 422,
-                message: 'invalid data'
-            }
-        });
+    const missingKeys = validateRequiredKeys(req.body, requiredKeys);
+    
+    if (missingKeys.length > 0) {
+        return res.status(422).json(validation({ key: missingKeys + " is required" }));
     }
+    let user;
     try {
         user = await User.findByIdAndUpdate(id, {
             firstname, lastName, emailAddress, password, homeAddress, roleId, title
@@ -97,23 +64,13 @@ const updateUser = async (req, res, next) => {
         return next(err);
     }
     if (!user) {
-        return res.status(500).json({
-            success: false,
-            data: null,
-            error: {
-                code: 500,
-                message: 'Unable to save user'
-            }
-        });
+
+        return res.status(500).json(error("Unable to save user", res.statusCode));
+
     }
-    return res.status(201).json({
-        success: true,
-        data: user,
-        error: {
-            code: 201,
-            message: 'Success Updated user'
-        }
-    });
+
+    return res.status(200).json(success("Success Updated user", { data: user }, res.statusCode));
+
 }
 const deleteUser = async (req, res, next) => {
     const id = req.params.id;
@@ -124,31 +81,32 @@ const deleteUser = async (req, res, next) => {
         return next(err);
     }
     if (!user) {
-        return res.status(500).json({
-            success: false,
-            data: null,
-            error: {
-                code: 500,
-                message: 'Unable to delete user'
-            }
-        });
+   
+        return res.status(500).json(error("Unable to delete user", res.statusCode));
+
     }
-    return res.status(201).json({
-        success: true,
-        data: user,
-        error: {
-            code: 201,
-            message: 'Success delete user'
+  
+    return res.status(200).json(success("Success delete User", { data: user }, res.statusCode));
+
+}
+// function validate(firstname, lastName, emailAddress, password,) {
+//     if (!firstname && firstname.trim() == "" || !lastName && lastName.trim() == "" || !emailAddress && emailAddress.trim() == "" || !password && password.length < 6) {
+//         return false
+//     }
+//     return true
+// }
+function validateRequiredKeys(jsonObj, requiredKeys) {
+    const missingKeys = [];
+
+    requiredKeys.forEach(key => {
+        console.log(jsonObj[key] );
+        if (!jsonObj.hasOwnProperty(key) || jsonObj[key].trim() == "" ) {
+            missingKeys.push(key);
         }
     });
-}
-function validate(data) {
-    if (!data.firstname && data.firstname.trim() == "" && !data.lastName && data.lastName.trim() == "" && !data.emailAddress && data.emailAddress.trim() == "" && !data.password && data.password.length < 6) {
-        return false
-    }
-    return true
-}
 
+    return missingKeys;
+}
 module.exports = {
     addUser, getAllUsers, updateUser, deleteUser
 }
