@@ -1,5 +1,5 @@
 # FarmByte_Assessment
-# REST API  application
+# REST API  User Management
 
 <!-- This is a bare-bones example of a Sinatra application providing a REST
 API to a DataMapper-backed model.
@@ -197,82 +197,94 @@ The REST API to the example app is described below.
     }
 
 # Terraform Script to Create Server instance
+Terraform main.tf URL :https://github.com/JumperWasHere/FarmByte_Assessment/blob/main/terraform/main.tf
 
+## Step 1. Run this command to - changes required by the current configuration
+
+    terraform plan
+
+## Step 2. Run this command to - Create or update infrastructure
+
+    terraform apply         
+
+## Terraform Script desciption    
 ### AWS Provider
 
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
+    terraform { 
+        required_providers {
+            aws = {
+              source  = "hashicorp/aws"
+              version = "~> 5.0"
+            }
+        }
     }
-  }
-}
+
 
 ### Configure the AWS Provider
+  
+    provider "aws" {
+        region = "ap-southeast-1" 
+        access_key = "ACCESS_KEY_USER_IAM"
+        secret_key = "SECRET_KEY_USER_IAM"
+    }
 
-`provider "aws" {
-  region = "ap-southeast-1" 
-   access_key = "ACCESS_KEY_USER_IAM"
-  secret_key = "SECRET_KEY_USER_IAM"
-}`
 
-on `region` key state your region,  `ACCESS_KEY_USER_IAM` and `SECRET_KEY_USER_IAM` replace this with your IAM access_key and secret_key
-more details option visit https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+on `region` key state your region,  `ACCESS_KEY_USER_IAM` and `SECRET_KEY_USER_IAM` replace this with your IAM access_key and secret_key<br />
+more details option visit https://registry.terraform.io/providers/hashicorp/aws/latest/docs<br />
 
 ### RSA key of size 4096 bits
 # generate a private key
+  
+    resource "tls_private_key" "rsa-4096" {
+    algorithm = "RSA"
+    rsa_bits  = 4096
+    }
 
-`resource "tls_private_key" "rsa-4096" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
-}`
-
-`algorithm` - (Required) Name of the algorithm to use when generating the private key. Currently supported values are `RSA`, `ECDSA`, `ED25519`
-`rsa_bits`  - (Optional) When the algorithm is RSA, the size of the generated RSA key, in bits (default: `2048`).
+`algorithm` - (Required) Name of the algorithm to use when generating the private key. Currently supported values are `RSA`, `ECDSA`, `ED25519`<br />
+`rsa_bits`  - (Optional) When the algorithm is RSA, the size of the generated RSA key, in bits (default: `2048`).<br />
 For more details option visit https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key#required
 
 ### Create a variable for the key name
 
-`variable "key_name" {
+    variable "key_name" {
     description = "Name of the SSH key pair"
-}`
+    }
 
 ### Create a key pair for connecting EC2 via SSH
 
-`resource "aws_key_pair" "key_pair" {
-  key_name   = var.key_name
-  public_key = tls_private_key.rsa-4096.public_key_openssh
-}`
+    resource "aws_key_pair" "key_pair" {
+    key_name   = var.key_name
+    public_key = tls_private_key.rsa-4096.public_key_openssh
+    }
 
-`key_name` -(Optional) The name for the key pair. If neither `key_name` nor `key_name_prefix` is provided, 
-Terraform will create a unique key name using the prefix `terraform-`
-`public_key` - (Required) The public key material.
-For more details option visit  https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair
+`key_name` -(Optional) The name for the key pair. If neither `key_name` nor `key_name_prefix` is provided, <br />
+Terraform will create a unique key name using the prefix `terraform-`<br />
+`public_key` - (Required) The public key material.<br />
+For more details option visit  https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair<br />
 
 ### Save the PEM file locally
 
-`resource "local_file" "private_key"{
+    resource "local_file" "private_key"{
     content = tls_private_key.rsa-4096.private_key_pem
     filename = var.key_name
-}`
+    }
 
 
 ### aws_instance
 
-`resource "aws_instance" "public_instance" {
-  ami           = "ami-078c1149d8ad719a7"
-  instance_type = "t2.micro"
-key_name = aws_key_pair.key_pair.key_name
-  tags = {
-    Name = "public_instance"
-  }
-}`
+    resource "aws_instance" "public_instance" {
+    ami           = "ami-078c1149d8ad719a7"
+    instance_type = "t2.micro"
+    key_name = aws_key_pair.key_pair.key_name
+        tags = {
+        Name = "public_instance"
+        }
+    }
 
-`ami`- (Required) The AMI to use for the instance, for this example `ami-078c1149d8ad719a7` is ami for ubuntu for `ap-southeast-1` region.
-`tags` - (Optional) A mapping of tags to assign to the resource.
-`key_name` - (Optional) The key name of the Key Pair to use for the instance; which can be managed using the `aws_key_pair` resource.
-`instance_type` - (Required) The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance.
-For more details option visit https://registry.terraform.io/providers/hashicorp/aws/2.36.0/docs/resources/instance
+`ami`- (Required) The AMI to use for the instance, for this example `ami-078c1149d8ad719a7` is ami for ubuntu for `ap-southeast-1` region.<br />
+`tags` - (Optional) A mapping of tags to assign to the resource.<br />
+`key_name` - (Optional) The key name of the Key Pair to use for the instance; which can be managed using the `aws_key_pair` resource.<br />
+`instance_type` - (Required) The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance.<br />
+For more details option visit https://registry.terraform.io/providers/hashicorp/aws/2.36.0/docs/resources/instance<br />
 
 
