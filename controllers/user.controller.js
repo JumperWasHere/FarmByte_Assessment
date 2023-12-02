@@ -99,7 +99,6 @@ function validateRequiredKeys(jsonObj, requiredKeys) {
     const missingKeys = [];
 
     requiredKeys.forEach(key => {
-        console.log(jsonObj[key] );
         if (!jsonObj.hasOwnProperty(key) || jsonObj[key].trim() == "" ) {
             missingKeys.push(key);
         }

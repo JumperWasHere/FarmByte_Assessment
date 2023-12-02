@@ -22,15 +22,15 @@ It uses `run-curl-tests.rb` which runs each command defined in
 
     npm start
 
-<!-- ## Run the tests
+## Default port
 
-    ./run-tests.sh -->
+    Default port :3000 
 
 # REST API
 
 The REST API to the example app is described below.
 
-## Get list of Things
+## Get list of Users
 
 ### Request
 
@@ -48,27 +48,27 @@ The REST API to the example app is described below.
     Content-Length: 561
 
     {
-    "success": true,
-    "data": [
-        {
-            "_id": "656891e6cd2a07512e835e5f",
-            "firstname": "MOHD ATIFF",
-            "lastName": "NAJIUDDIN",
-            "emailAddress": "ariffnaj3@gmail.com",
-            "password": "abcd1234",
-            "homeAddress": "no 1 jln bayan, 70400 seremban, Negeri Sembilan",
-            "roleId": "1",
-            "title": "TUAN",
-            "__v": 0
-        }  
-    ],
-    "error": {
+        "message": "Success get Users",
+        "error": false,
         "code": 200,
-        "message": "Success fetch data"
+        "results": {
+            "data": [
+                {
+                    "_id": "656891e6cd2a07512e835e5f",
+                    "firstname": "MOHD ATIFF",
+                    "lastName": "NAJIUDDIN",
+                    "emailAddress": "ariffnaj3@gmail.com",
+                    "password": "abcd1234",
+                    "homeAddress": "no 1 jln bayan, 70400 seremban, Negeri Sembilan",
+                    "roleId": "1",
+                    "title": "TUAN",
+                    "__v": 0
+                }
+            ]
+        }
     }
-}
 
-## Create a new Thing
+## Create a new User
 
 ### Request
 
@@ -77,319 +77,203 @@ The REST API to the example app is described below.
     Content-Type: application/json' Accept:*/*  http://localhost:3000/users
 
     {
-        "firstname":"MOHD ARIFF",
-        "lastName":"NAJIUDDIN",
-        "emailAddress":"ariffnaj5@gmail.com",
-        "password":"abcd1234",
-        "homeAddress":"no 1 jln bayan, 70400 seremban, Negeri Sembilan",
-        "roleId":"1",
-        "title":"TUAN"
+        "firstname":"MOHD MOS",                                             //required
+        "lastName":"NAJIUDDIN",                                             //required
+        "emailAddress":"mosnaj5@gmail.com",                                 //required
+        "password":"abcd1234",                                              //required
+        "homeAddress":"no 1 jln bayan, 70400 seremban, Negeri Sembilan",    //Optional
+        "roleId":"1",                                                       //Optional
+        "title":"TUAN"                                                      //Optional
     }
 
 ### Response
 
     HTTP/1.1 201 Created
-    Date: Fri, 01 Dec 2023 15:10:32 GMT
+    Date: Sat, 02 Dec 2023 02:23:57 GMT
     Status: 201 Created
     Connection: close
     Content-Type: application/json
     Content-Length: 318
 
     {
-    "success": true,
-    "data": {
-        "firstname": "MOHD ARIFF",
-        "lastName": "NAJIUDDIN",
-        "emailAddress": "ariffnaj5@gmail.com",
-        "password": "abcd1234",
-        "homeAddress": "no 1 jln bayan, 70400 seremban, Negeri Sembilan",
-        "roleId": "1",
-        "title": "TUAN",
-        "_id": "6569f76839a2d96bfd09ded4",
-        "__v": 0
-    },
-    "error": {
+        "message": "Success insert user",
+        "error": false,
         "code": 201,
-        "message": "Success insert user"
+        "results": {
+            "data": {
+                "firstname": "MOHD MOS",
+                "lastName": "NAJIUDDIN",
+                "emailAddress": "mosnaj5@gmail.com",
+                "password": "abcd1234",
+                "homeAddress": "no 1 jln bayan, 70400 seremban, Negeri Sembilan",
+                "roleId": "1",
+                "title": "TUAN",
+                "_id": "656a953d3b74b3e6851da0ea",
+                "__v": 0
+            }
+        }
+    }
+
+## Update a User by id
+
+### Request
+
+`PUT /users/:id`
+
+    'Accept: application/json' http://localhost:3000/users/:id
+
+    {
+       "firstname":"MOHD AKIF",                                             //required
+        "lastName":"NAJIUDDIN",                                             //required
+        "emailAddress":"akifffnaj@gmail.com",                               //required
+        "password":"abcd1234",                                              //required
+        "homeAddress":"no 1 jln bayan, 70400 seremban, Negeri Sembilan",    //Optional
+        "roleId":"1",                                                       //Optional
+        "title":"TUAN"                                                      //Optional
+    }
+
+### Response
+
+    HTTP/1.1 200 OK
+    Date: Sat, 02 Dec 2023 02:21:42 GMT
+    Status: 200 OK
+    Connection: close
+    Content-Type: application/json
+    Content-Length: 320
+
+    {
+    "message": "Success Updated user",
+    "error": false,
+    "code": 200,
+    "results": {
+        "data": {
+            "_id": "6569f76839a2d96bfd09ded4",
+            "firstname": "MOHD ARIFF",
+            "lastName": "NAJIUDDIN",
+            "emailAddress": "ariffnaj5@gmail.com",
+            "password": "abcd1234",
+            "homeAddress": "no 1 jln bayan, 70400 seremban, Negeri Sembilan",
+            "roleId": "1",
+            "title": "TUAN",
+            "__v": 0
+        }
     }
 }
 
-## Get a specific Thing
+## Delete a Users by id
 
 ### Request
 
-`GET /thing/id`
+`DELETE /users/:id`
 
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
+     'Accept: application/json' http://localhost:3000/users/:id
 
 ### Response
 
     HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
+    Date: Sat, 02 Dec 2023 02:26:40 GMT
     Status: 200 OK
     Connection: close
     Content-Type: application/json
-    Content-Length: 36
+    Content-Length: 315
+
+    {
+        "message": "Success delete User",
+        "error": false,
+        "code": 200,
+        "results": {
+            "data": {
+                "_id": "656a953d3b74b3e6851da0ea",
+                "firstname": "MOHD MOS",
+                "lastName": "NAJIUDDIN",
+                "emailAddress": "mosnaj5@gmail.com",
+                "password": "abcd1234",
+                "homeAddress": "no 1 jln bayan, 70400 seremban, Negeri Sembilan",
+                "roleId": "1",
+                "title": "TUAN",
+                "__v": 0
+            }
+        }
+    }
+
+# TERRAFORM SCRIPT to Create Server instance
+
+# AWS Provider
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+# Configure the AWS Provider
+
+provider "aws" {
+  region = "ap-southeast-1" 
+   access_key = "ACCESS_KEY_USER_IAM"
+  secret_key = "SECRET_KEY_USER_IAM"
+}
+
+on `region` key state your region,  `ACCESS_KEY_USER_IAM` and `SECRET_KEY_USER_IAM` replace this with your IAM access_key and secret_key
+more details option visit https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+# RSA key of size 4096 bits
+# generate private key
+
+resource "tls_private_key" "rsa-4096" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+`algorithm` - (Required) Name of the algorithm to use when generating the private key. Currently-supported values are `RSA`, `ECDSA`, `ED25519`
+`rsa_bits`  - (Optional) When algorithm is RSA, the size of the generated RSA key, in bits (default: `2048`).
+more details option visit https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key#required
+
+# Create variable for key name
+
+variable "key_name" {
+    description = "Name of the SSH key pair"
+}
+
+# create key pair for connecting EC2 via SSH
+
+resource "aws_key_pair" "key_pair" {
+  key_name   = var.key_name
+  public_key = tls_private_key.rsa-4096.public_key_openssh
+}
+
+`key_name` -(Optional) The name for the key pair. If neither `key_name` nor `key_name_prefix` is provided, 
+Terraform will create a unique key name using the prefix `terraform-`
+`public_key` - (Required) The public key material.
+more details option visit  https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair
+
+# Save PEM file locally
+
+resource "local_file" "private_key"{
+    content = tls_private_key.rsa-4096.private_key_pem
+    filename = var.key_name
+}
+
+
+# aws_instance
+# Create a new instance of the latest Ubuntu
+
+resource "aws_instance" "public_instance" {
+  ami           = "ami-078c1149d8ad719a7"
+  instance_type = "t2.micro"
+key_name = aws_key_pair.key_pair.key_name
+  tags = {
+    Name = "public_instance"
+  }
+}
+
+`ami`- (Required) The AMI to use for the instance, for this example `ami-078c1149d8ad719a7` is ami for ubuntu for `ap-southeast-1` region.
+`tags` - (Optional) A mapping of tags to assign to the resource.
+`key_name` - (Optional) The key name of the Key Pair to use for the instance; which can be managed using the `aws_key_pair` resource.
+`instance_type` - (Required) The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance.
+more details option visit https://registry.terraform.io/providers/hashicorp/aws/2.36.0/docs/resources/instance
 
-    {"id":1,"name":"Foo","status":"new"}
-
-## Get a non-existent Thing
-
-### Request
-
-`GET /thing/id`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/9999
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:30 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Create another new Thing
-
-### Request
-
-`POST /thing/`
-
-    curl -i -H 'Accept: application/json' -d 'name=Bar&junk=rubbish' http://localhost:7000/thing
-
-### Response
-
-    HTTP/1.1 201 Created
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 201 Created
-    Connection: close
-    Content-Type: application/json
-    Location: /thing/2
-    Content-Length: 35
-
-    {"id":2,"name":"Bar","status":null}
-
-## Get list of Things again
-
-### Request
-
-`GET /thing/`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 74
-
-    [{"id":1,"name":"Foo","status":"new"},{"id":2,"name":"Bar","status":null}]
-
-## Change a Thing's state
-
-### Request
-
-`PUT /thing/:id/status/changed`
-
-    curl -i -H 'Accept: application/json' -X PUT http://localhost:7000/thing/1/status/changed
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 40
-
-    {"id":1,"name":"Foo","status":"changed"}
-
-## Get changed Thing
-
-### Request
-
-`GET /thing/id`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 40
-
-    {"id":1,"name":"Foo","status":"changed"}
-
-## Change a Thing
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'name=Foo&status=changed2' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:31 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed2"}
-
-## Attempt to change a Thing using partial params
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'status=changed3' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed3"}
-
-## Attempt to change a Thing using invalid params
-
-### Request
-
-`PUT /thing/:id`
-
-    curl -i -H 'Accept: application/json' -X PUT -d 'id=99&status=changed4' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Foo","status":"changed4"}
-
-## Change a Thing using the _method hack
-
-### Request
-
-`POST /thing/:id?_method=POST`
-
-    curl -i -H 'Accept: application/json' -X POST -d 'name=Baz&_method=PUT' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 200 OK
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 200 OK
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 41
-
-    {"id":1,"name":"Baz","status":"changed4"}
-
-## Change a Thing using the _method hack in the url
-
-### Request
-
-`POST /thing/:id?_method=POST`
-
-    curl -i -H 'Accept: application/json' -X POST -d 'name=Qux' http://localhost:7000/thing/1?_method=PUT
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: text/html;charset=utf-8
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Delete a Thing
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
-
-### Response
-
-    HTTP/1.1 204 No Content
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 204 No Content
-    Connection: close
-
-
-## Try to delete same Thing again
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X DELETE http://localhost:7000/thing/1/
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:32 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Get deleted Thing
-
-### Request
-
-`GET /thing/1`
-
-    curl -i -H 'Accept: application/json' http://localhost:7000/thing/1
-
-### Response
-
-    HTTP/1.1 404 Not Found
-    Date: Thu, 24 Feb 2011 12:36:33 GMT
-    Status: 404 Not Found
-    Connection: close
-    Content-Type: application/json
-    Content-Length: 35
-
-    {"status":404,"reason":"Not found"}
-
-## Delete a Thing using the _method hack
-
-### Request
-
-`DELETE /thing/id`
-
-    curl -i -H 'Accept: application/json' -X POST -d'_method=DELETE' http://localhost:7000/thing/2/
-
-### Response
-
-    HTTP/1.1 204 No Content
-    Date: Thu, 24 Feb 2011 12:36:33 GMT
-    Status: 204 No Content
-    Connection: close
 
