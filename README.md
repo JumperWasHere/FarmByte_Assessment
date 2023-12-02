@@ -196,9 +196,9 @@ The REST API to the example app is described below.
         }
     }
 
-# TERRAFORM SCRIPT to Create Server instance
+# Terraform Script to Create Server instance
 
-# AWS Provider
+### AWS Provider
 
 terraform {
   required_providers {
@@ -209,7 +209,7 @@ terraform {
   }
 }
 
-# Configure the AWS Provider
+### Configure the AWS Provider
 
 provider "aws" {
   region = "ap-southeast-1" 
@@ -220,7 +220,7 @@ provider "aws" {
 on `region` key state your region,  `ACCESS_KEY_USER_IAM` and `SECRET_KEY_USER_IAM` replace this with your IAM access_key and secret_key
 more details option visit https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 
-# RSA key of size 4096 bits
+### RSA key of size 4096 bits
 # generate private key
 
 resource "tls_private_key" "rsa-4096" {
@@ -232,13 +232,13 @@ resource "tls_private_key" "rsa-4096" {
 `rsa_bits`  - (Optional) When algorithm is RSA, the size of the generated RSA key, in bits (default: `2048`).
 more details option visit https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key#required
 
-# Create variable for key name
+### Create variable for key name
 
 variable "key_name" {
     description = "Name of the SSH key pair"
 }
 
-# create key pair for connecting EC2 via SSH
+### create key pair for connecting EC2 via SSH
 
 resource "aws_key_pair" "key_pair" {
   key_name   = var.key_name
@@ -250,7 +250,7 @@ Terraform will create a unique key name using the prefix `terraform-`
 `public_key` - (Required) The public key material.
 more details option visit  https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair
 
-# Save PEM file locally
+### Save PEM file locally
 
 resource "local_file" "private_key"{
     content = tls_private_key.rsa-4096.private_key_pem
@@ -258,8 +258,7 @@ resource "local_file" "private_key"{
 }
 
 
-# aws_instance
-# Create a new instance of the latest Ubuntu
+### aws_instance
 
 resource "aws_instance" "public_instance" {
   ami           = "ami-078c1149d8ad719a7"
