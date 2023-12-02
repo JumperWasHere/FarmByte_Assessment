@@ -5,7 +5,8 @@ const cors = require('cors');
 var path = require('path');
 var userRouter = require('./routes/user.router');
 const mongoose = require("mongoose");
-const uri = "mongodb+srv://FarmByte:VWidata3AWANCI6a@atlascluster.jgifr0r.mongodb.net/?retryWrites=true&w=majority";
+require('dotenv').config({ path: __dirname + '/.env' });
+const uri = process.env.CONNECTION_STRING;
 mongoose.connect(uri)
     .catch((err) => console.log(err));
 app.use(cors({
@@ -19,6 +20,7 @@ app.use(function (req, res, next) {
     next(createError(404));
 });
 app.use(function (err, req, res, next) {
+
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};

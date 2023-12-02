@@ -8,8 +8,8 @@ terraform {
 }
 provider "aws" {
   region = "ap-southeast-1"
-   access_key = "AKIAX7KHOC3ANWDTVH5X"
-  secret_key = "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"
+   access_key = "access_key"
+  secret_key = "secret_key"
 }
 
 # RSA key of size 4096 bits
