@@ -211,68 +211,68 @@ terraform {
 
 ### Configure the AWS Provider
 
-provider "aws" {
+`provider "aws" {
   region = "ap-southeast-1" 
    access_key = "ACCESS_KEY_USER_IAM"
   secret_key = "SECRET_KEY_USER_IAM"
-}
+}`
 
 on `region` key state your region,  `ACCESS_KEY_USER_IAM` and `SECRET_KEY_USER_IAM` replace this with your IAM access_key and secret_key
 more details option visit https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 
 ### RSA key of size 4096 bits
-# generate private key
+# generate a private key
 
-resource "tls_private_key" "rsa-4096" {
+`resource "tls_private_key" "rsa-4096" {
   algorithm = "RSA"
   rsa_bits  = 4096
-}
+}`
 
-`algorithm` - (Required) Name of the algorithm to use when generating the private key. Currently-supported values are `RSA`, `ECDSA`, `ED25519`
-`rsa_bits`  - (Optional) When algorithm is RSA, the size of the generated RSA key, in bits (default: `2048`).
-more details option visit https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key#required
+`algorithm` - (Required) Name of the algorithm to use when generating the private key. Currently supported values are `RSA`, `ECDSA`, `ED25519`
+`rsa_bits`  - (Optional) When the algorithm is RSA, the size of the generated RSA key, in bits (default: `2048`).
+For more details option visit https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key#required
 
-### Create variable for key name
+### Create a variable for the key name
 
-variable "key_name" {
+`variable "key_name" {
     description = "Name of the SSH key pair"
-}
+}`
 
-### create key pair for connecting EC2 via SSH
+### Create a key pair for connecting EC2 via SSH
 
-resource "aws_key_pair" "key_pair" {
+`resource "aws_key_pair" "key_pair" {
   key_name   = var.key_name
   public_key = tls_private_key.rsa-4096.public_key_openssh
-}
+}`
 
 `key_name` -(Optional) The name for the key pair. If neither `key_name` nor `key_name_prefix` is provided, 
 Terraform will create a unique key name using the prefix `terraform-`
 `public_key` - (Required) The public key material.
-more details option visit  https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair
+For more details option visit  https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/key_pair
 
-### Save PEM file locally
+### Save the PEM file locally
 
-resource "local_file" "private_key"{
+`resource "local_file" "private_key"{
     content = tls_private_key.rsa-4096.private_key_pem
     filename = var.key_name
-}
+}`
 
 
 ### aws_instance
 
-resource "aws_instance" "public_instance" {
+`resource "aws_instance" "public_instance" {
   ami           = "ami-078c1149d8ad719a7"
   instance_type = "t2.micro"
 key_name = aws_key_pair.key_pair.key_name
   tags = {
     Name = "public_instance"
   }
-}
+}`
 
 `ami`- (Required) The AMI to use for the instance, for this example `ami-078c1149d8ad719a7` is ami for ubuntu for `ap-southeast-1` region.
 `tags` - (Optional) A mapping of tags to assign to the resource.
 `key_name` - (Optional) The key name of the Key Pair to use for the instance; which can be managed using the `aws_key_pair` resource.
 `instance_type` - (Required) The type of instance to start. Updates to this field will trigger a stop/start of the EC2 instance.
-more details option visit https://registry.terraform.io/providers/hashicorp/aws/2.36.0/docs/resources/instance
+For more details option visit https://registry.terraform.io/providers/hashicorp/aws/2.36.0/docs/resources/instance
 
 
