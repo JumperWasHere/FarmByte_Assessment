@@ -23,7 +23,6 @@ jobs:
           app-name: farmbyteAssement
           publish-profile: ${{ secrets.AZURE_WEBAPPS_PUBLISH_PROFILE }}
           package: .
-      - name: Start Application in Azure
-        run: npm start 
+
 
 
