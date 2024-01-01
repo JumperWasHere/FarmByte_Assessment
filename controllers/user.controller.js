@@ -3,37 +3,71 @@
 
 const User = require('../model/user')
 const { Categories, Clinic } = require('../model/Categories')
-const clinic = require('../model/Clinics')
+// const clinic = require('../model/Clinics')
 const { success, error, validation } = require('../utils/responseApi');
 const requiredKeys = ["firstname", "lastName", "emailAddress","password"];
 
 const getAllUsers = async (req, res, next) => {
     let categories;
+    let categoriesWithClinics = [];
+    let users = [];
     try {
-        //db.collection.aggregate( <pipeline>, <options> )
-         categories = await Categories.aggregate([
-             {
-                $lookup: {
-                    from: 'clinics', // Collection name of clinics
-                    localField: '_id', // Join field in categories (category id)
-                    foreignField: 'category', // Join field in clinics (category id)
-                     as: 'clinics', // Output array field name, this case use same array clinics
-                },
-            },
-             {
-                $match: { clinics: { $exists: true, $ne: [] } }, // Filter categories with at least one clinic
-            },
-        ]);
+        // db.collection.aggregate( <pipeline>, <options> )
+
+        //  categories = await Categories.aggregate([
+        //      {
+        //         $lookup: {
+        //             from: 'clinics', // Collection name of clinics
+        //             localField: '_id', // Join field in categories (category id)
+        //             foreignField: 'category', // Join field in clinics (category id)
+        //              as: 'clinics', // Output array field name, this case use same array clinics
+        //         },
+        //     },
+        //      {
+        //         $match: { clinics: { $exists: true, $ne: [] } }, // Filter categories with at least one clinic
+        //     },
+        // ]);
+
+
+
+
+        // const categoryCursor = await Categories.find().lean().cursor();
+
+        // // Initialize an empty array to store results
+        // // const categoriesWithClinics = [];
+        // // Iterate through each category
+        // for await (const category of categoryCursor) {
+        //     console.log('category', category);
+        //     // Check if the category has any related clinics
+        //     const hasClinics = await Clinic.exists({ category: category._id });
+        //     console.log('hasClinics', hasClinics);
+
+        //     // If clinics exist, add the category to the results
+        //     if (hasClinics) {
+        //         categoriesWithClinics.push(category);
+        //     }
+        // }
+        //tce
+        // const distinctClinicCategories = await Clinic.distinct('category')
+        // console.log('distinctClinicCategories', distinctClinicCategories);
+
+        // if (distinctClinicCategories.length < 0) return []
+
+        // categories = await Categories
+        //     .find({ _id: { $in: distinctClinicCategories } })
+        //     .lean()
+
+        users = await User.find();
     } catch (err) {
         return next(err);
     }
-    if (!categories) {
+    if (!users) {
 
         return res.status(500).json(error("internal server error", res.statusCode));
 
     }
 
-    return res.status(200).json(success("Success get categories", { data: categories }, res.statusCode));
+    return res.status(200).json(success("Success get users", { data: users }, res.statusCode));
 
 }
 const addData = async (req, res, next) =>{
@@ -69,6 +103,7 @@ const addData = async (req, res, next) =>{
     return res.status(200).json(success("Success create cat and clinic", { data: null }, res.statusCode));
 }
 const addUser = async (req, res, next) => {
+    console.log(req.body);
     const { firstname, lastName, emailAddress, password, homeAddress, roleId, title } = req.body;
     const missingKeys = validateRequiredKeys(req.body, requiredKeys);
 
@@ -78,10 +113,17 @@ const addUser = async (req, res, next) => {
 
     let user;
     try {
+        var query = { emailAddress: emailAddress };
+        let value = await User.findOne(query);
+        if (value !== null){
+
+            console.log('exist email');
+        }
+
         user = new User({
             firstname, lastName, emailAddress, password, homeAddress, roleId, title
         })
-        user = await user.save();
+        // user = await user.save();
 
     } catch (err) {
         return next(err);

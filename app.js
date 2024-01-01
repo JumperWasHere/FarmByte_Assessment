@@ -6,15 +6,19 @@ var path = require('path');
 var userRouter = require('./routes/user.router');
 const mongoose = require("mongoose");
 require('dotenv').config({ path: __dirname + '/.env' });
+
 const uri = process.env.CONNECTION_STRING;
+
 mongoose.connect(uri)
     .catch((err) => console.log(err));
 app.use(cors({
     origin: '*'
 }));
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.json());
+// app.use(express.urlencoded());
 app.use('/users', userRouter)
 app.use(function (req, res, next) {
     next(createError(404));
