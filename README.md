@@ -13,6 +13,16 @@ documentation below.
 
 It uses `run-curl-tests.rb` which runs each command defined in
 `commands.yml`. -->
+### DB using MongoDb Cloud 
+
+    const uri = process.env.CONNECTION_STRING;
+    
+example set `CONNECTION_STRING` at `.env` file like:
+
+    CONNECTION_STRING="mongodb+srv://<user>:<Password>@atlascluster.jgifr0r.mongodb.net/?retryWrites=true&w=majority"
+
+Replace `<password>` with the password for the  `<user>` with user.
+
 
 ## Install
 
